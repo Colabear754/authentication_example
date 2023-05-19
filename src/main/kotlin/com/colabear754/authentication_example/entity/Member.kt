@@ -4,6 +4,7 @@ import com.colabear754.authentication_example.common.MemberType
 import com.colabear754.authentication_example.dto.MemberUpdateRequest
 import com.colabear754.authentication_example.dto.SignUpRequest
 import jakarta.persistence.*
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.time.LocalDateTime
 import java.util.*
 
@@ -23,16 +24,19 @@ class Member(
     val id: UUID? = null
 ) {
     companion object {
-        fun from(request: SignUpRequest) = Member(
+        fun from(request: SignUpRequest, encoder: PasswordEncoder) = Member(
             account = request.account,
-            password = request.password,
+            password = encoder.encode(request.password),
             name = request.name,
             age = request.age
         )
     }
 
-    fun update(newMember: MemberUpdateRequest) {
-        this.password = newMember.newPassword?.takeIf { it.isNotBlank() } ?: this.password
+    fun update(newMember: MemberUpdateRequest, encoder: PasswordEncoder) {
+        this.password = newMember.newPassword
+            ?.takeIf { it.isNotBlank() }
+            ?.let { encoder.encode(it) }
+            ?: this.password
         this.name = newMember.name
         this.age = newMember.age
     }

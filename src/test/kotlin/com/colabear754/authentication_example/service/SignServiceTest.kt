@@ -12,11 +12,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.crypto.password.PasswordEncoder
 
 @SpringBootTest
 class SignServiceTest @Autowired constructor(
     private val signService: SignService,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val encoder: PasswordEncoder
 ) {
     @BeforeEach
     @AfterEach
@@ -51,7 +53,7 @@ class SignServiceTest @Autowired constructor(
     @Test
     fun 로그인() {
         // given
-        memberRepository.save(Member("colabear754", "1234", "콜라곰"))
+        memberRepository.save(Member("colabear754", encoder.encode("1234"), "콜라곰"))
         // when
         val response = signService.signIn(SignInRequest("colabear754", "1234"))
         // then

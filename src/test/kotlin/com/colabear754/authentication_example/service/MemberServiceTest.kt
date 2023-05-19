@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.crypto.password.PasswordEncoder
 import java.util.*
 
 @SpringBootTest
 class MemberServiceTest @Autowired constructor(
     private val memberService: MemberService,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val encoder: PasswordEncoder
 ) {
     @BeforeEach
     @AfterEach
@@ -61,7 +63,7 @@ class MemberServiceTest @Autowired constructor(
     @Test
     fun 회원정보수정() {
         // given
-        val savedMember = memberRepository.save(Member("colabear754", "1234"))
+        val savedMember = memberRepository.save(Member("colabear754", encoder.encode("1234")))
         // when
         val request = MemberUpdateRequest("1234", "5678", "콜라곰", 27)
         val result = memberService.updateMember(savedMember.id!!, request)
@@ -70,6 +72,6 @@ class MemberServiceTest @Autowired constructor(
         assertThat(result.name).isEqualTo("콜라곰")
         assertThat(result.age).isEqualTo(27)
         val member = memberRepository.findAll()[0]
-        assertThat(member.password).isEqualTo("5678")
+        assertThat(encoder.matches("5678", member.password)).isEqualTo(true)
     }
 }
