@@ -1,5 +1,6 @@
 package com.colabear754.authentication_example.security
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -12,8 +13,10 @@ class SecurityConfig {
     @Bean
     fun filterChain(http: HttpSecurity) = http
         .csrf().disable()
+        .headers { it.frameOptions().sameOrigin() }
         .authorizeHttpRequests {
             it.requestMatchers(*allowedUrls).permitAll()
+                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated()
         }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
