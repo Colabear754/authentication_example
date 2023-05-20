@@ -2,6 +2,7 @@ package com.colabear754.authentication_example.controller
 
 import com.colabear754.authentication_example.dto.ApiResponse
 import com.colabear754.authentication_example.dto.MemberUpdateRequest
+import com.colabear754.authentication_example.security.UserAuthorize
 import com.colabear754.authentication_example.service.MemberService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @Tag(name = "로그인 후 사용할 수 있는 API")
+@UserAuthorize
 @RestController
 @RequestMapping("/member")
 class MemberController(private val memberService: MemberService) {

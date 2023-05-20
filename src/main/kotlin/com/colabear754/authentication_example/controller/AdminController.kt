@@ -1,6 +1,7 @@
 package com.colabear754.authentication_example.controller
 
 import com.colabear754.authentication_example.dto.ApiResponse
+import com.colabear754.authentication_example.security.AdminAuthorize
 import com.colabear754.authentication_example.service.AdminService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "관리자용 API")
+@AdminAuthorize
 @RestController
 @RequestMapping("/admin")
 class AdminController(private val adminService: AdminService) {

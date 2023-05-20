@@ -29,4 +29,11 @@ class TokenProvider(
         .setIssuedAt(Timestamp.valueOf(LocalDateTime.now()))
         .setExpiration(Date.from(Instant.now().plus(expirationHours, ChronoUnit.HOURS)))
         .compact()!!
+
+    fun validateTokenAndGetSubject(token: String?): String? = Jwts.parserBuilder()
+        .setSigningKey(secretKey.toByteArray())
+        .build()
+        .parseClaimsJws(token)
+        .body
+        .subject
 }
