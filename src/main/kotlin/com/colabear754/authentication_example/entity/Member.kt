@@ -17,12 +17,12 @@ class Member(
     var name: String? = null,
     var age: Int? = null,
     @Enumerated(EnumType.STRING)
-    val type: MemberType = MemberType.USER,
-    val createdAt: LocalDateTime = LocalDateTime.now(),
+    val type: MemberType = MemberType.USER
+) {
+    val createdAt: LocalDateTime = LocalDateTime.now()
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null
-) {
     companion object {
         fun from(request: SignUpRequest, encoder: PasswordEncoder) = Member(
             account = request.account,
