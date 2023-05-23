@@ -7,7 +7,7 @@ import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 
-@RestControllerAdvice(basePackages = ["com.colabear754.authentication_example.controller"])
+@RestControllerAdvice
 class ExceptionHandler {
     @ExceptionHandler(IllegalArgumentException::class, NoSuchElementException::class)
     fun handleCommonException(e: Exception) = ResponseEntity.badRequest().body(ApiResponse.error(e.message))
