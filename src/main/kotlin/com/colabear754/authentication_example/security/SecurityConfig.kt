@@ -15,6 +15,10 @@ class SecurityConfig(private val jwtAuthenticationFilter: JwtAuthenticationFilte
     fun filterChain(http: HttpSecurity) = http
         .csrf().disable()
         .headers { it.frameOptions().sameOrigin() }
+        .authorizeHttpRequests {
+            it.requestMatchers("/sign-up", "sign-in").permitAll()
+                .anyRequest().authenticated()
+        }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
         .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)
         .build()!!
