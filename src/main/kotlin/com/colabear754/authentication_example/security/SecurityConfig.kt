@@ -7,12 +7,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 
 @EnableMethodSecurity
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val entryPoint: AuthenticationEntryPoint,
     @Value("\${security.allowed-uris}")
     private val allowedUris: Array<String>
 ) {
@@ -26,6 +28,7 @@ class SecurityConfig(
         }
         .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
         .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)
+        .exceptionHandling { it.authenticationEntryPoint(entryPoint) }
         .build()!!
 
     @Bean
