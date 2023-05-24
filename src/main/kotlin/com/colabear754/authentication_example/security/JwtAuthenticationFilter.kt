@@ -23,11 +23,15 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         if (request.requestURI !in allowedUris) {
-            val token = parseBearerToken(request)
-            val user = parseUserSpecification(token)
-            UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
-                .apply { details = WebAuthenticationDetails(request) }
-                .also { SecurityContextHolder.getContext().authentication = it }
+            try {
+                val token = parseBearerToken(request)
+                val user = parseUserSpecification(token)
+                UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
+                    .apply { details = WebAuthenticationDetails(request) }
+                    .also { SecurityContextHolder.getContext().authentication = it }
+            } catch (e: Exception) {
+                request.setAttribute("exception", e)
+            }
         }
 
         filterChain.doFilter(request, response)

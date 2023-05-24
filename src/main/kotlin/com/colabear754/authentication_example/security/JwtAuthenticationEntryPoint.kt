@@ -14,6 +14,6 @@ class JwtAuthenticationEntryPoint(
     private val resolver: HandlerExceptionResolver
 ) : AuthenticationEntryPoint {
     override fun commence(request: HttpServletRequest?, response: HttpServletResponse?, authException: AuthenticationException?) {
-        resolver.resolveException(request!!, response!!, null, authException!!)
+        resolver.resolveException(request!!, response!!, null, request.getAttribute("exception") as Exception)
     }
 }
