@@ -1,6 +1,5 @@
 package com.colabear754.authentication_example.security
 
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -14,10 +13,10 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @Configuration
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val entryPoint: AuthenticationEntryPoint,
-    @Value("\${security.allowed-uris}")
-    private val allowedUris: Array<String>
+    private val entryPoint: AuthenticationEntryPoint
 ) {
+    private val allowedUris = arrayOf("/sign-up", "sign-in")
+
     @Bean
     fun filterChain(http: HttpSecurity) = http
         .csrf().disable()

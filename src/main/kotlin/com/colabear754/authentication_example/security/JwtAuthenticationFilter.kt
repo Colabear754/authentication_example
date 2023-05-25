@@ -3,7 +3,6 @@ package com.colabear754.authentication_example.security
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -16,22 +15,16 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Order(0)
 @Component
-class JwtAuthenticationFilter(
-    private val tokenProvider: TokenProvider,
-    @Value("\${security.allowed-uris}")
-    private val allowedUris: Array<String>
-) : OncePerRequestFilter() {
+class JwtAuthenticationFilter(private val tokenProvider: TokenProvider) : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        if (request.requestURI !in allowedUris) {
-            try {
-                val token = parseBearerToken(request)
-                val user = parseUserSpecification(token)
-                UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
-                    .apply { details = WebAuthenticationDetails(request) }
-                    .also { SecurityContextHolder.getContext().authentication = it }
-            } catch (e: Exception) {
-                request.setAttribute("exception", e)
-            }
+        try {
+            val token = parseBearerToken(request)
+            val user = parseUserSpecification(token)
+            UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
+                .apply { details = WebAuthenticationDetails(request) }
+                .also { SecurityContextHolder.getContext().authentication = it }
+        } catch (e: Exception) {
+            request.setAttribute("exception", e)
         }
 
         filterChain.doFilter(request, response)
