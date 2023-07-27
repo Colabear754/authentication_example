@@ -15,7 +15,7 @@ class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val entryPoint: AuthenticationEntryPoint
 ) {
-    private val allowedUris = arrayOf("/sign-up", "sign-in")
+    private val allowedUris = arrayOf("/sign-up", "/sign-in")
 
     @Bean
     fun filterChain(http: HttpSecurity) = http
