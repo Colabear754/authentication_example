@@ -17,15 +17,11 @@ import org.springframework.web.filter.OncePerRequestFilter
 @Component
 class JwtAuthenticationFilter(private val tokenProvider: TokenProvider) : OncePerRequestFilter() {
     override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        try {
-            val token = parseBearerToken(request)
-            val user = parseUserSpecification(token)
-            UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
-                .apply { details = WebAuthenticationDetails(request) }
-                .also { SecurityContextHolder.getContext().authentication = it }
-        } catch (e: Exception) {
-            request.setAttribute("exception", e)
-        }
+        val token = parseBearerToken(request)
+        val user = parseUserSpecification(token)
+        UsernamePasswordAuthenticationToken.authenticated(user, token, user.authorities)
+            .apply { details = WebAuthenticationDetails(request) }
+            .also { SecurityContextHolder.getContext().authentication = it }
 
         filterChain.doFilter(request, response)
     }
