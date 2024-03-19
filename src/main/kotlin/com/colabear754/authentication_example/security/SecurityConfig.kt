@@ -19,8 +19,8 @@ class SecurityConfig(
 
     @Bean
     fun filterChain(http: HttpSecurity) = http
-        .csrf().disable()
-        .headers { it.frameOptions().sameOrigin() }
+        .csrf { it.disable() }
+        .headers { it.frameOptions { frameOptions -> frameOptions.sameOrigin() } }
         .authorizeHttpRequests {
             it.requestMatchers(*allowedUris).permitAll()
                 .anyRequest().authenticated()
