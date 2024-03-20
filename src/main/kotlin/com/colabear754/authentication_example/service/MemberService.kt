@@ -7,16 +7,12 @@ import com.colabear754.authentication_example.dto.MemberUpdateResponse
 import com.colabear754.authentication_example.repository.MemberRepository
 import com.colabear754.authentication_example.util.findByIdOrThrow
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Service
-class MemberService(
-    private val memberRepository: MemberRepository,
-    private val encoder: PasswordEncoder
-) {
+class MemberService(private val memberRepository: MemberRepository) {
     @Transactional(readOnly = true)
     fun getMemberInfo(id: UUID) = MemberInfoResponse.from(memberRepository.findByIdOrThrow(id, "존재하지 않는 회원입니다."))
 
@@ -29,9 +25,9 @@ class MemberService(
 
     @Transactional
     fun updateMember(id: UUID, request: MemberUpdateRequest): MemberUpdateResponse {
-        val member = memberRepository.findByIdOrNull(id)?.takeIf { encoder.matches(request.password, it.password) }
+        val member = memberRepository.findByIdOrNull(id)?.takeIf { it.password == request.password }
             ?: throw IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.")
-        member.update(request, encoder)
+        member.update(request)
         return MemberUpdateResponse.of(true, member)
     }
 }
